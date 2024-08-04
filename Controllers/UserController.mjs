@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { matchedData, validationResult } from "express-validator";
+import { matchedData } from "express-validator";
 import {
   userValidationSchema,
   loginUserValidationSchema,
@@ -36,7 +36,7 @@ routes.post(
         User: savedUser,
       });
     } catch (error) {
-      return res.status(500).json({ msg: "Error occured when creating user" });
+      return res.status(500).json({ msg: error.errorResponse.errmsg });
     }
   }
 );
@@ -61,9 +61,10 @@ routes.post(
         return res.status(400).json({ msg: `Invalid credentials` });
 
       req.session.userId = findUser._id;
-      console.log(req.session.userId)
 
-      return res.status(200).json(findUser);
+      return res.status(200).json({
+        msg: `Successfully logged ${data.username || data.email} in `,
+      });
     } catch (error) {
       console.error(error);
       return res
@@ -103,7 +104,6 @@ routes.put(
     const data = matchedData(req);
     try {
       const userId = req.session.userId;
-      // if (!deletedUser) return res.status(404).json({ msg: "User not found" });
 
       const updatedUser = await User.findByIdAndUpdate(userId, data, {
         returnDocument: "after",
@@ -116,7 +116,6 @@ routes.put(
   }
 );
 
-// Delete User Profile: DELETE /users/profile: Delete the authenticated user's profile.
 routes.delete("/users/profile", isLoggedIn, async (req, res) => {
   try {
     const userId = req.session.userId;
