@@ -118,14 +118,14 @@ export const accountsValidationSchema = checkSchema({
     optional: true,
     isFloat: {
       options: { min: 0 },
-      errorMessage: 'Balance must be a non-negative number',
+      errorMessage: "Balance must be a non-negative number",
     },
   },
   createdAt: {
     in: ["body"],
     optional: true,
     isISO8601: {
-      errorMessage: 'Invalid date format',
+      errorMessage: "Invalid date format",
     },
   },
 });
@@ -137,7 +137,17 @@ export const checkAccountIdSchema = checkSchema({
       errorMessage: "Account Id param can't be empty",
     },
     isMongoId: {
-      errorMessage: "Account Id needs to be a valid MongoDB ObjectId"
-    }
-  }
-})
+      errorMessage: "Account Id needs to be a valid MongoDB ObjectId",
+    },
+  },
+});
+
+export const transactionValidatorSchema = checkSchema({
+  amount: {
+    in: ["body"],
+    isFloat: {
+      options: { min: 0 },
+      errorMessage: "Deposit amount must be a non-negative number",
+    },
+  },
+});
