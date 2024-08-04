@@ -1,4 +1,5 @@
 import "dotenv/config";
+
 import express from "express";
 import routes from "./Controllers/Controller.mjs";
 import mongoose from "mongoose";
@@ -23,11 +24,11 @@ try {
   await mongoose.connect(process.env.MONGO_URI);
   console.log("Successfully Connected to DB");
 } catch (error) {
-  console.log(error);
+  console.error("Could not connect to MongoDB...", error);
 }
 
 app.use(routes);
 
 app.listen(PORT, () => {
-  console.log(`started server on localhost://${PORT}`);
+  console.log(`started server on localhost:${PORT}`);
 });
