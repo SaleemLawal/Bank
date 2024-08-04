@@ -4,7 +4,7 @@ import {
   accountsValidationSchema,
   checkAccountIdSchema,
 } from "../utils/validators.mjs";
-import { matchedData, param } from "express-validator";
+import { matchedData } from "express-validator";
 import { Account } from "../Schema/Account.mjs";
 import { User } from "../Schema/User.mjs";
 
@@ -18,7 +18,6 @@ routes.post(
     const data = matchedData(req);
     try {
       const userId = req.session.userId;
-      console.log(userId);
       const newAccount = await Account.create({
         ...data,
         userId,
