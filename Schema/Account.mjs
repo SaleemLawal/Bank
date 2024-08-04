@@ -14,11 +14,11 @@ const accountSchema = new Schema({
   balance: {
     type: Schema.Types.Number,
     default: 0,
-    min: [0, 'Balance cannot be negative'],
+    min: [0, "Balance cannot be negative"],
   },
   createdAt: {
     type: Schema.Types.Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 

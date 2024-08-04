@@ -29,7 +29,7 @@ const userSchema = new Schema({
   },
   role: {
     type: Schema.Types.Mixed,
-    default: "user",
+    default: "User",
     validate: [validateRole, "Invalid role"],
   },
 });
