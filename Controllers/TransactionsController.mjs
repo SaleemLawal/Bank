@@ -9,7 +9,6 @@ import { Transaction } from "../Schema/Transaction.mjs";
 
 const routes = Router();
 
-// POST /transactions/deposit: Deposit funds into an account.
 routes.post(
   "/transactions/deposit",
   isLoggedIn,
@@ -28,7 +27,7 @@ routes.post(
       if (user.role !== "admin" && account.userId.toString() !== userId)
         return res.status(404).json({ msg: `Unauthorized` });
 
-      account.balance += data.amount;
+      account.balance += Number(data.amount);
       await account.save();
       await Transaction.create({
         type: "deposit",
@@ -44,7 +43,6 @@ routes.post(
   }
 );
 
-// POST /transactions/withdraw: Withdraw funds from an account.
 routes.post(
   "/transactions/withdraw",
   isLoggedIn,
@@ -62,10 +60,11 @@ routes.post(
 
       if (user.role !== "admin" && account.userId.toString() !== userId)
         return res.status(404).json({ msg: `Unauthorized` });
+
       if (account.balance - data.amount < 0)
         return res.status(400).json({ msg: "Can't withdraw over balance" });
 
-      account.balance -= data.amount;
+      account.balance -= Number(data.amount);
       await account.save();
       await Transaction.create({
         type: "withdraw",
@@ -81,7 +80,6 @@ routes.post(
   }
 );
 
-// POST /transactions/transfer: Transfer funds between accounts.
 routes.post(
   "/transactions/transfer/:accountId",
   isLoggedIn,
@@ -115,8 +113,8 @@ routes.post(
         return res.status(400).json({ msg: "Can't send over balance" });
       }
 
-      from.balance -= data.amount;
-      to.balance += data.amount;
+      from.balance -= Number(data.amount);
+      to.balance += Number(data.amount);
 
       await from.save({ session });
       await to.save({ session });
@@ -141,12 +139,27 @@ routes.post(
   }
 );
 
-// Get Transaction History:
-// GET /transactions/history/:accountId: Get the transaction history for a specific account.'
-routes.get("/transactions/history/:accountId", async (req, res) => {
+routes.get("/transactions/history/incoming/:accountId", async (req, res) => {
   try {
     const { accountId } = req.params;
-    const transactions = await Transaction.find({ accountId }).sort({
+    const transactions = await Transaction.find({
+      toAccountId: accountId,
+    }).sort({
+      date: -1,
+    });
+    res.status(200).json(transactions);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+});
+
+routes.get("/transactions/history/outgoing/:accountId", async (req, res) => {
+  try {
+    const { accountId } = req.params;
+    const transactions = await Transaction.find({
+      fromAccountId: accountId,
+    }).sort({
       date: -1,
     });
     res.status(200).json(transactions);
