@@ -2,12 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const transactionSchema = new Schema(
   {
-    transactionId: {
-      type: String,
-      required: true,
-      unique: true,
-      default: () => new mongoose.Types.ObjectId(),
-    },
+
     fromAccountId: {
       type: Schema.Types.ObjectId,
       ref: "Account",
@@ -37,7 +32,6 @@ const transactionSchema = new Schema(
       type: Schema.Types.String,
     },
   },
-  { _id: false }
 );
 
 export const Transaction = mongoose.model("Transaction", transactionSchema);
