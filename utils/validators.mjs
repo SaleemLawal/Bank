@@ -150,4 +150,13 @@ export const transactionValidatorSchema = checkSchema({
       errorMessage: "Deposit amount must be a non-negative number",
     },
   },
+  toAccountId: {
+    in: ["body"],
+    notEmpty: {
+      errorMessage: "Account Id param can't be empty",
+    },
+    isMongoId: {
+      errorMessage: "Account Id needs to be a valid MongoDB ObjectId",
+    },
+  }
 });
